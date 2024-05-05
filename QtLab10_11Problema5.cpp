@@ -579,7 +579,12 @@ void AppGUI::connectSignals() {
 			mesajContract.warning(contract, "Warning", "Numarul de discipline trebuie sa fie un numar natural!");
 			return;
 		}
-		srv.genereaza_contract(nr_discipline_corecte);
+		try {
+			srv.genereaza_contract(nr_discipline_corecte);
+		}
+		catch (ContractException& mesaj) {
+			mesajContract.warning(contract, "Warning", QString::fromStdString(mesaj.get_mesaj()));
+		}
 		txtContractNumar->clear();
 		loadList(srv.getAllContract());
 		});
