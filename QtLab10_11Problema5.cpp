@@ -455,6 +455,8 @@ void AppGUI::uiCauta() {
 	catch (ValidatorException& mesaj) {
 		msgBox.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
 	}
+	txtDenumire->clear();
+	txtProfesor->clear();
 
 }
 
