@@ -1,7 +1,7 @@
 # Lab 10-11: 
  Creați interfața grafica utilizator folosind Qt pentru aplicația la care lucrați.<br>
 
-# Cerințe:
+## Cerințe:
 Ferestrele se creează din cod, fără designeri de ferestre, drag&drop etc.<br>
 Toate funcționalitățile din aplicație trebuie sa fie accesibile folosind interfața utilizator.<br> Alegetii voi 
 funcționalitățile care sunt accesibile după prima iterație (minim 30% din totalul funcționalităților).<br>
