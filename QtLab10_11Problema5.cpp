@@ -1,6 +1,7 @@
 #include "QtLab10_11Problema5.h"
 
 void AppGUI::initGUI() {
+	
 	this->setWindowIcon(QIcon("icons/school.jpeg"));
 	this->setWindowTitle("Aplicatie Discipline");
 	QPalette palette = QPalette();
@@ -29,7 +30,7 @@ void AppGUI::initGUI() {
 
 	///Layout lista
 	QVBoxLayout* listaLayout = new QVBoxLayout; //layout stanga
-	mainLayout->addLayout(listaLayout, 15);
+	mainLayout->addLayout(listaLayout, 1);
 
 	QLabel *listaLabel = new QLabel("Lista discipline");
 	listaLabel->setAlignment(Qt::AlignCenter);
@@ -37,14 +38,18 @@ void AppGUI::initGUI() {
 
 	listaLayout->addWidget(listaLabel, 1);
 	table->resizeColumnsToContents();
-	listaLayout->addWidget(table);
+	table->setMinimumSize(500, 200);	
+	listaLayout->addWidget(table, 2);
 	btn_undo->setIcon(QIcon("icons/undo.jpg"));
 	btn_contract->setIcon(QIcon("icons/contract.jpg"));
+
 	// Apply shadow effect to the buttons
 	QGraphicsDropShadowEffect* undoShadowEffect = new QGraphicsDropShadowEffect(this);
 	undoShadowEffect->setOffset(2, 2);
 	btn_undo->setGraphicsEffect(undoShadowEffect);
+	
 	listaLayout->addWidget(btn_undo);
+
 
 	QGraphicsDropShadowEffect* contractShadowEffect = new QGraphicsDropShadowEffect(this);
 	contractShadowEffect->setOffset(2, 2);
@@ -53,10 +58,18 @@ void AppGUI::initGUI() {
 
 	///Layout operatii
 	QVBoxLayout* operatiiLayout = new QVBoxLayout; //layout dreapta
-	mainLayout->addLayout(operatiiLayout, 20);
+	
+	mainLayout->addLayout(operatiiLayout, 1);
 
 	QFormLayout* formLayout = new QFormLayout;
 	operatiiLayout->addLayout(formLayout);
+	//apply to line edit the red hover effect
+	txtDenumire->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
+	txtOre->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
+	txtTip->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
+	txtProfesor->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
+	
+	//qDebug() << "idk" << txtDenumire->styleSheet();
 	formLayout->addRow(new QLabel{ "Denumire: " }, txtDenumire);
 	formLayout->addRow(new QLabel{ "Ore: " }, txtOre);
 	formLayout->addRow(new QLabel{ "Tip: " }, txtTip);
@@ -126,6 +139,7 @@ void AppGUI::initGUI() {
 
 	QFormLayout* filtrareFormLayout = new QFormLayout;
 	sortLayout->addLayout(filtrareFormLayout);
+	txtfilter->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
 	filtrareFormLayout->addRow(new QLabel{ "Input: " }, txtfilter);
 
 	QHBoxLayout* filtrareLayout = new QHBoxLayout;
@@ -198,6 +212,9 @@ void AppGUI::contractGUI() {
 
 	QFormLayout* genereazaLayout = new QFormLayout;
 	contractLayout->addLayout(genereazaLayout);
+
+	txtContractDenumire->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
+	txtContractProfesor->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
 	genereazaLayout->addRow(new QLabel{ "Denumire: " }, txtContractDenumire);
 	genereazaLayout->addRow(new QLabel{ "Profesor: " }, txtContractProfesor);
 
@@ -214,6 +231,8 @@ void AppGUI::contractGUI() {
 	contractLayout->addWidget(genereazaContractLabel);
 	QFormLayout* genereazaContractLayout = new QFormLayout;
 	contractLayout->addLayout(genereazaContractLayout);
+
+	txtContractNumar->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
 	genereazaContractLayout->addRow(new QLabel{ "Numar discipline: " }, txtContractNumar);
 
 	QGraphicsDropShadowEffect* genereazaContractEffect = new QGraphicsDropShadowEffect(this);
@@ -229,6 +248,8 @@ void AppGUI::contractGUI() {
 	contractLayout->addWidget(exportaContractLabel);
 	QFormLayout* exportLayout = new QFormLayout;
 	contractLayout->addLayout(exportLayout);
+
+	txtContractFile->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
 	exportLayout->addRow(new QLabel{ "Nume fisier: " }, txtContractFile);
 
 	QGraphicsDropShadowEffect* exportContractEffect = new QGraphicsDropShadowEffect(this);
@@ -247,7 +268,6 @@ void AppGUI::contractGUI() {
 	btn_contract_exit->setGraphicsEffect(exitContractEffect);
 	btn_contract_exit->setIcon(QIcon("icons/exit.jpg"));
 	contractOperatiiLayout->addWidget(btn_contract_exit);
-
 }
 
 void AppGUI::loadTable(const vector<Disciplina>& disciplina) {
@@ -256,7 +276,8 @@ void AppGUI::loadTable(const vector<Disciplina>& disciplina) {
 	this->table->setRowCount(disciplina.size() + 1);
 
 	int nr_linie = 0;
-
+	table->verticalHeader()->setVisible(false);
+	table->horizontalHeader()->setVisible(false);
 	table->setItem(nr_linie, 0, new QTableWidgetItem("Nr."));
 	table->setItem(nr_linie, 1, new QTableWidgetItem("Denumire"));
 	table->setItem(nr_linie, 2, new QTableWidgetItem("Ore"));
