@@ -33,10 +33,12 @@ private:
 	Service& srv;
 	QWidget* contract = new QWidget;
 	QTableWidget* table = new QTableWidget;
+	QListWidget* list = new QListWidget;
 	QListWidget* lista_contracte = new QListWidget;
+	QVBoxLayout* listaLayout = new QVBoxLayout;
 
 	///BUTOANE
-
+	vector<QPushButton*> vector_btn;
 	QPushButton* btn_adauga = new QPushButton{ "Adauga" };
 	QPushButton* btn_sterge = new QPushButton{ "Sterge" };
 	QPushButton* btn_modifica = new QPushButton{ "Modifica" };
@@ -75,6 +77,7 @@ private:
 
 	void loadList(const vector<Disciplina>& discipline);
 	void loadTable(const vector<Disciplina>& discipline);
+	void loadListfromTable(const vector<Disciplina>& discipline);
 	void contractGUI();
 	void connectSignals();
 
@@ -93,8 +96,6 @@ private:
 	void uiSortProfTip();
 	void uiContractAdauga();
 
-
-	
 };
 
 #endif /* QTLAB10_11PROBLEMA5_H_ */

@@ -42,6 +42,7 @@ int main(int argc, char *argv[]) {
 	Validator validator;
 	Contract contract;
 	Service controller(repo, validator, contract);
+	//Ui ui{ controller };
 	AppGUI gui{ controller };
 	gui.show();
 
@@ -50,7 +51,7 @@ int main(int argc, char *argv[]) {
 	//ui.run();
 
 	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//creeare();
+	////creeare();
 	//_CrtDumpMemoryLeaks();
 	
 }

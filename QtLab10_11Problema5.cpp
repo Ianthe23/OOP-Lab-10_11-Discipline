@@ -2,6 +2,7 @@
 
 void AppGUI::initGUI() {
 	
+	vector_btn.clear();
 	this->setWindowIcon(QIcon("icons/school.jpeg"));
 	this->setWindowTitle("Aplicatie Discipline");
 	QPalette palette = QPalette();
@@ -10,7 +11,7 @@ void AppGUI::initGUI() {
 	// Create a gradient for the fading effect
 	QLinearGradient gradient(this->width() / 2, 0, this->width(), 0);
 	gradient.setColorAt(0, QColor("#2573cc")); // Same color as background
-	gradient.setColorAt(1, QColor("#7fb0e8")); // Transparent color
+	gradient.setColorAt(1, QColor("#7fb0e8")); // color
 
 	// Set the gradient as the brush for the background
 	palette.setBrush(QPalette::Window, QBrush(gradient));
@@ -29,17 +30,31 @@ void AppGUI::initGUI() {
 	setLayout(mainLayout);
 
 	///Layout lista
-	QVBoxLayout* listaLayout = new QVBoxLayout; //layout stanga
+	 //layout stanga
 	mainLayout->addLayout(listaLayout, 1);
-
-	QLabel *listaLabel = new QLabel("Lista discipline");
+	listaLayout->addSpacing(20);
+	QLabel *listaLabel = new QLabel("Tabel discipline");
 	listaLabel->setAlignment(Qt::AlignCenter);
 	listaLabel->setFont(boldFont);
 
 	listaLayout->addWidget(listaLabel, 1);
+
+	auto s = srv.raport();
+
 	table->resizeColumnsToContents();
-	table->setMinimumSize(500, 200);	
+	table->setMinimumSize(500, 200);
 	listaLayout->addWidget(table, 2);
+
+	listaLayout->addSpacing(20);
+	QLabel *infoLabel = new QLabel("Lista discipline");
+	infoLabel->setAlignment(Qt::AlignCenter);
+	infoLabel->setFont(boldFont);
+
+	listaLayout->addWidget(infoLabel, 1);
+
+	//size the list like the table
+	list->setMinimumSize(500, 200);
+	listaLayout->addWidget(list, 2);
 	btn_undo->setIcon(QIcon("icons/undo.jpg"));
 	btn_contract->setIcon(QIcon("icons/contract.jpg"));
 
@@ -164,6 +179,23 @@ void AppGUI::initGUI() {
 	loadShadowEffect->setOffset(2, 2);
 	load->setGraphicsEffect(loadShadowEffect);
 	listaLayout->addWidget(load);
+
+	listaLayout->addSpacing(20);
+	QLabel* tipLabel = new QLabel("Tip discipline");
+	tipLabel->setAlignment(Qt::AlignCenter);
+	tipLabel->setFont(boldFont);
+	listaLayout->addWidget(tipLabel);
+	for (const auto& rap : s) {
+		QPushButton* btn = new QPushButton{ QString::fromStdString(rap.first) };
+		vector_btn.push_back(btn);
+	}
+
+	for (const auto& btn : vector_btn) {
+		QGraphicsDropShadowEffect* btnShadowEffect = new QGraphicsDropShadowEffect(this);
+		btnShadowEffect->setOffset(2, 2);
+		btn->setGraphicsEffect(btnShadowEffect);
+		listaLayout->addWidget(btn);
+	}
 
 	QGraphicsDropShadowEffect* exitShadowEffect = new QGraphicsDropShadowEffect(this);
 	exitShadowEffect->setOffset(2, 2);
@@ -295,6 +327,14 @@ void AppGUI::loadTable(const vector<Disciplina>& disciplina) {
 		nr_linie++;
 	}
 }
+void AppGUI::loadListfromTable(const vector<Disciplina>& discipline) {
+	list->clear();
+	int index = 0;
+	for (const auto& disciplina : discipline) {
+		index++;
+		list->addItem(QString::fromStdString(std::to_string(index) + ". " + disciplina.get_denumire() + "  - ore " + std::to_string(disciplina.get_ore()) + "  - tip " + disciplina.get_tip() + "  - prof. " + disciplina.get_profesor()));
+	}
+}
 
 void AppGUI::loadList(const vector<Disciplina>& discipline) {
 	lista_contracte->clear();
@@ -383,7 +423,7 @@ void AppGUI::uiAdauga() {
 	}
 
 	try {
-		srv.adaugaSrv(denumire, ore_corecte, tip, profesor);
+		srv.adaugaSrv(denumire, ore_corecte, tip, profesor);		
 	}
 	catch (RepoException& mesaj) {
 		QMessageBox::warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
@@ -394,6 +434,7 @@ void AppGUI::uiAdauga() {
 
 	clearTextBox();
 	loadTable(srv.getAll());
+	loadListfromTable(srv.getAll());
 
 }
 
@@ -417,6 +458,7 @@ void AppGUI::uiSterge() {
 
 	clearTextBox();
 	loadTable(srv.getAll());
+	loadListfromTable(srv.getAll());
 }
 
 void AppGUI::uiModifica() {
@@ -450,6 +492,7 @@ void AppGUI::uiModifica() {
 
 	clearTextBox();
 	loadTable(srv.getAll());
+	loadListfromTable(srv.getAll());
 }
 
 void AppGUI::uiCauta() {
@@ -469,6 +512,7 @@ void AppGUI::uiCauta() {
 
 		clearTextBox();
 		loadTable(discipline);
+		loadListfromTable(discipline);
 	}
 	catch (RepoException& mesaj) {
 		msgBox.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
@@ -484,16 +528,19 @@ void AppGUI::uiCauta() {
 void AppGUI::uiSortDenumire() {
 	vector<Disciplina> discipline = srv.sortDenumire();
 	loadTable(discipline);
+	loadListfromTable(discipline);
 }
 
 void AppGUI::uiSortOre() {
 	vector<Disciplina> discipline = srv.sortOre();
 	loadTable(discipline);
+	loadListfromTable(discipline);
 }
 
 void AppGUI::uiSortProfTip() {
 	vector<Disciplina> discipline = srv.sortProfTip();
 	loadTable(discipline);
+	loadListfromTable(discipline);
 }
 
 
@@ -519,6 +566,7 @@ void AppGUI::uiFilterOre() {
 
 	txtfilter->clear();
 	loadTable(discipline);
+	loadListfromTable(discipline);
 }
 
 void AppGUI::uiFilterProf() {
@@ -532,6 +580,7 @@ void AppGUI::uiFilterProf() {
 
 	txtfilter->clear();
 	loadTable(discipline);
+	loadListfromTable(discipline);
 }
 
 void AppGUI::connectSignals() {
@@ -551,7 +600,21 @@ void AppGUI::connectSignals() {
 
 	QObject::connect(load, &QPushButton::clicked, [&]() {
 		this->loadTable(srv.getAll());
+		this->loadListfromTable(srv.getAll());
 		});
+
+	for (const auto& btn : vector_btn) {
+		QObject::connect(btn, &QPushButton::clicked, [&]() {
+			for (const auto& rap : srv.raport()) {
+				if (btn->text().toStdString() == rap.first) {
+					//write in the information box the number of disciplines of the selected type
+					QMessageBox msg;
+					msg.setWindowIcon(QIcon("icons/school.jpeg"));
+					msg.information(this, "Raport", QString::fromStdString(rap.first) + " - " + QString::number(rap.second.get_count()));				
+				}
+			}
+			});
+	}
 
 	QObject::connect(btn_adauga, &QPushButton::clicked, this, &AppGUI::uiAdauga);
 	QObject::connect(btn_sterge, &QPushButton::clicked, this, &AppGUI::uiSterge);
@@ -574,6 +637,7 @@ void AppGUI::connectSignals() {
 		}
 
 		loadTable(srv.getAll());
+		loadListfromTable(srv.getAll());
 		});
 
 	QObject::connect(btn_contract, &QPushButton::clicked, [&]() {

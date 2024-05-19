@@ -7,4 +7,4 @@ info,4,real,Marin
 bio,3,real,Popescu
 bio,2,uman,Pop
 chimie,3,real,Marinescu
-chimie,3,real,Musat
+chimie,4,uman,Musat
