@@ -1,7 +1,7 @@
 #include "QtLab10_11Problema5.h"
 
 void AppGUI::initGUI() {
-	
+
 	vector_btn.clear();
 	this->setWindowIcon(QIcon("icons/school.jpeg"));
 	this->setWindowTitle("Aplicatie Discipline");
@@ -33,7 +33,7 @@ void AppGUI::initGUI() {
 	 //layout stanga
 	mainLayout->addLayout(listaLayout, 1);
 	listaLayout->addSpacing(20);
-	QLabel *listaLabel = new QLabel("Tabel discipline");
+	QLabel* listaLabel = new QLabel("Tabel discipline");
 	listaLabel->setAlignment(Qt::AlignCenter);
 	listaLabel->setFont(boldFont);
 
@@ -46,7 +46,7 @@ void AppGUI::initGUI() {
 	listaLayout->addWidget(table, 2);
 
 	listaLayout->addSpacing(20);
-	QLabel *infoLabel = new QLabel("Lista discipline");
+	QLabel* infoLabel = new QLabel("Lista discipline");
 	infoLabel->setAlignment(Qt::AlignCenter);
 	infoLabel->setFont(boldFont);
 
@@ -56,25 +56,37 @@ void AppGUI::initGUI() {
 	list->setMinimumSize(500, 200);
 	listaLayout->addWidget(list, 2);
 	btn_undo->setIcon(QIcon("icons/undo.jpg"));
-	btn_contract->setIcon(QIcon("icons/contract.jpg"));
+	open_contract->setIcon(QIcon("icons/contract.jpg"));
+	open_contract_readonly->setIcon(QIcon("icons/contract.jpg"));
 
 	// Apply shadow effect to the buttons
 	QGraphicsDropShadowEffect* undoShadowEffect = new QGraphicsDropShadowEffect(this);
 	undoShadowEffect->setOffset(2, 2);
 	btn_undo->setGraphicsEffect(undoShadowEffect);
-	
+
 	listaLayout->addWidget(btn_undo);
 
 
 	QGraphicsDropShadowEffect* contractShadowEffect = new QGraphicsDropShadowEffect(this);
 	contractShadowEffect->setOffset(2, 2);
-	btn_contract->setGraphicsEffect(contractShadowEffect);
-	listaLayout->addWidget(btn_contract);
+	open_contract->setGraphicsEffect(contractShadowEffect);
+	listaLayout->addWidget(open_contract);
+
+	QGraphicsDropShadowEffect* contractRDOnlyShadowEffect = new QGraphicsDropShadowEffect(this);
+	contractRDOnlyShadowEffect->setOffset(2, 2);
+	open_contract_readonly->setGraphicsEffect(contractRDOnlyShadowEffect);
+	listaLayout->addWidget(open_contract_readonly);
 
 	///Layout operatii
 	QVBoxLayout* operatiiLayout = new QVBoxLayout; //layout dreapta
-	
+
 	mainLayout->addLayout(operatiiLayout, 1);
+
+	QLabel* operatiiLabel = new QLabel("Operatii discipline");
+	operatiiLabel->setAlignment(Qt::AlignCenter);
+	operatiiLabel->setFont(boldFont);
+
+	operatiiLayout->addWidget(operatiiLabel, 1);
 
 	QFormLayout* formLayout = new QFormLayout;
 	operatiiLayout->addLayout(formLayout);
@@ -83,7 +95,7 @@ void AppGUI::initGUI() {
 	txtOre->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
 	txtTip->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
 	txtProfesor->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
-	
+
 	//qDebug() << "idk" << txtDenumire->styleSheet();
 	formLayout->addRow(new QLabel{ "Denumire: " }, txtDenumire);
 	formLayout->addRow(new QLabel{ "Ore: " }, txtOre);
@@ -117,11 +129,53 @@ void AppGUI::initGUI() {
 	btn_cauta->setGraphicsEffect(cautaShadowEffect);
 	actiuniLayout->addWidget(btn_cauta);
 
+	operatiiLayout->addSpacing(20);
+
+	QLabel* operatiiContractLabel = new QLabel("Adauga la contract");
+	operatiiContractLabel->setAlignment(Qt::AlignCenter);
+	operatiiContractLabel->setFont(boldFont);
+
+	operatiiLayout->addWidget(operatiiContractLabel, 1);
+
+	QFormLayout* genereazaLayout = new QFormLayout;
+	operatiiLayout->addLayout(genereazaLayout);
+
+	txtDenumireContract->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
+	txtProfesorContract->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
+	genereazaLayout->addRow(new QLabel{ "Denumire: " }, txtDenumireContract);
+	genereazaLayout->addRow(new QLabel{ "Profesor: " }, txtProfesorContract);
+
+	QHBoxLayout* actiuniContractLayout = new QHBoxLayout;
+	operatiiLayout->addLayout(actiuniContractLayout);
+
+	QGraphicsDropShadowEffect* adaugaContractEffect = new QGraphicsDropShadowEffect(this);
+	adaugaContractEffect->setOffset(2, 2);
+	add_contract->setGraphicsEffect(adaugaContractEffect);
+	add_contract->setIcon(QIcon("icons/add.jpg"));
+	actiuniContractLayout->addWidget(add_contract);
+
+	QLabel* exportaContractLabel = new QLabel("Exporta contract");
+	exportaContractLabel->setAlignment(Qt::AlignCenter);
+	exportaContractLabel->setFont(boldFont);
+	operatiiLayout->addWidget(exportaContractLabel);
+	QFormLayout* exportLayout = new QFormLayout;
+	operatiiLayout->addLayout(exportLayout);
+
+	txtContractFile->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
+	exportLayout->addRow(new QLabel{ "Nume fisier: " }, txtContractFile);
+
+	QGraphicsDropShadowEffect* exportContractEffect = new QGraphicsDropShadowEffect(this);
+	exportContractEffect->setOffset(2, 2);
+	export_contract->setGraphicsEffect(exportContractEffect);
+	export_contract->setIcon(QIcon("icons/export.png"));
+	operatiiLayout->addWidget(export_contract);
+	operatiiLayout->addSpacing(20);
+
 	QVBoxLayout* sortLayout = new QVBoxLayout;
 	operatiiLayout->addLayout(sortLayout);
 	sortLayout->addSpacing(20);
 
-	QLabel *sortLabel = new QLabel("Tip de sortare");
+	QLabel* sortLabel = new QLabel("Tip de sortare");
 	sortLabel->setAlignment(Qt::AlignCenter);
 	sortLabel->setFont(boldFont);
 
@@ -146,7 +200,7 @@ void AppGUI::initGUI() {
 	sortLayout->addWidget(sort_proftip);
 	sortLayout->addSpacing(20);
 
-	QLabel *filtrareLabel = new QLabel("Filtrari");
+	QLabel* filtrareLabel = new QLabel("Filtrari");
 	filtrareLabel->setAlignment(Qt::AlignCenter);
 	filtrareLabel->setFont(boldFont);
 
@@ -201,13 +255,13 @@ void AppGUI::initGUI() {
 	exitShadowEffect->setOffset(2, 2);
 	exit->setGraphicsEffect(exitShadowEffect);
 	operatiiLayout->addSpacing(20);
-	operatiiLayout->addWidget(exit);
 
+	operatiiLayout->addWidget(exit);
 }
 
-void AppGUI::contractGUI() {
-	contract->setWindowTitle("Setare contract");	
-	contract->setWindowIcon(QIcon("icons/contract.jpg"));
+void ContractGUI::initContractGUI() {
+	setWindowTitle("Setare contract");	
+	setWindowIcon(QIcon("icons/contract.jpg"));
 
 	QPalette palette_contract = QPalette();
 	QLinearGradient gradient(this->width() / 2, 0, this->width(), 0);
@@ -215,13 +269,13 @@ void AppGUI::contractGUI() {
 	gradient.setColorAt(1, QColor("#7fb0e8"));
 
 	palette_contract.setBrush(QPalette::Window, QBrush(gradient));
-	contract->setAutoFillBackground(true);
+	setAutoFillBackground(true);
 
-	contract->setPalette(palette_contract);
-	contract->setFont(QFont("Helvetica", 12, 10, false));
+	setPalette(palette_contract);
+	setFont(QFont("Helvetica", 12, 10, false));
 
 	QHBoxLayout* Layout = new QHBoxLayout;
-	contract->setLayout(Layout);
+	setLayout(Layout);
 
 	QVBoxLayout* contractLayout = new QVBoxLayout;
 	Layout->addLayout(contractLayout);
@@ -233,28 +287,13 @@ void AppGUI::contractGUI() {
 	QFont boldFont = font;
 	boldFont.setBold(true);
 	contractLabel->setFont(boldFont);
-
 	contractLayout->addWidget(contractLabel);
+
 	QGraphicsDropShadowEffect* stergeContractEffect = new QGraphicsDropShadowEffect(this);
 	stergeContractEffect->setOffset(2, 2);
-	btn_contract_sterge->setIcon(QIcon("icons/empty.png"));
-	btn_contract_sterge->setGraphicsEffect(stergeContractEffect);
-	contractLayout->addWidget(btn_contract_sterge);
-	contractLayout->addSpacing(20);
-
-	QFormLayout* genereazaLayout = new QFormLayout;
-	contractLayout->addLayout(genereazaLayout);
-
-	txtContractDenumire->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
-	txtContractProfesor->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
-	genereazaLayout->addRow(new QLabel{ "Denumire: " }, txtContractDenumire);
-	genereazaLayout->addRow(new QLabel{ "Profesor: " }, txtContractProfesor);
-
-	QGraphicsDropShadowEffect* adaugaContractEffect = new QGraphicsDropShadowEffect(this);
-	adaugaContractEffect->setOffset(2, 2);
-	btn_contract_adauga->setGraphicsEffect(adaugaContractEffect);
-	btn_contract_adauga->setIcon(QIcon("icons/add.jpg"));
-	contractLayout->addWidget(btn_contract_adauga);
+	empty_contract->setIcon(QIcon("icons/empty.png"));
+	empty_contract->setGraphicsEffect(stergeContractEffect);
+	contractLayout->addWidget(empty_contract);
 	contractLayout->addSpacing(20);
 
 	QLabel *genereazaContractLabel = new QLabel("Genereaza contract");
@@ -269,37 +308,29 @@ void AppGUI::contractGUI() {
 
 	QGraphicsDropShadowEffect* genereazaContractEffect = new QGraphicsDropShadowEffect(this);
 	genereazaContractEffect->setOffset(2, 2);
-	btn_contract_genereaza->setGraphicsEffect(genereazaContractEffect);
-	btn_contract_genereaza->setIcon(QIcon("icons/generate.png"));
-	contractLayout->addWidget(btn_contract_genereaza);
+	generate_contract->setGraphicsEffect(genereazaContractEffect);
+	generate_contract->setIcon(QIcon("icons/generate.png"));
+	contractLayout->addWidget(generate_contract);
 	contractLayout->addSpacing(20);
-
-	QLabel *exportaContractLabel = new QLabel("Exporta contract");
-	exportaContractLabel->setAlignment(Qt::AlignCenter);
-	exportaContractLabel->setFont(boldFont);
-	contractLayout->addWidget(exportaContractLabel);
-	QFormLayout* exportLayout = new QFormLayout;
-	contractLayout->addLayout(exportLayout);
-
-	txtContractFile->setStyleSheet("QLineEdit{font-size: 16px;font-weight: 500;border: 1px solid transparent;border-radius: 4px;padding: 4px 6px;}");
-	exportLayout->addRow(new QLabel{ "Nume fisier: " }, txtContractFile);
-
-	QGraphicsDropShadowEffect* exportContractEffect = new QGraphicsDropShadowEffect(this);
-	exportContractEffect->setOffset(2, 2);
-	btn_contract_export->setGraphicsEffect(exportContractEffect);
-	btn_contract_export->setIcon(QIcon("icons/export.png"));
-	contractLayout->addWidget(btn_contract_export);
 
 	QVBoxLayout* contractOperatiiLayout = new QVBoxLayout;
 	Layout->addLayout(contractOperatiiLayout);
 
-	contractOperatiiLayout->addWidget(lista_contracte);
+	contractOperatiiLayout->addWidget(lista_contract);
 
 	QGraphicsDropShadowEffect* exitContractEffect = new QGraphicsDropShadowEffect(this);
 	exitContractEffect->setOffset(2, 2);
-	btn_contract_exit->setGraphicsEffect(exitContractEffect);
-	btn_contract_exit->setIcon(QIcon("icons/exit.jpg"));
-	contractOperatiiLayout->addWidget(btn_contract_exit);
+	exit->setGraphicsEffect(exitContractEffect);
+	exit->setIcon(QIcon("icons/exit.jpg"));
+	contractOperatiiLayout->addWidget(exit);
+}
+
+void ContractGUI::reloadList(const vector<Disciplina>& discipline) {
+	this->lista_contract->clear();
+
+	for (const auto& disciplina : discipline) {
+		this->lista_contract->addItem(QString::fromStdString(disciplina.get_denumire() + " - prof. " + disciplina.get_profesor()));
+	}
 }
 
 void AppGUI::loadTable(const vector<Disciplina>& disciplina) {
@@ -343,18 +374,18 @@ void AppGUI::loadList(const vector<Disciplina>& discipline) {
 	}
 }
 void AppGUI::clearContractTextBox() {
-	txtContractDenumire->clear();
-	txtContractProfesor->clear();
+	txtDenumireContract->clear();
+	txtProfesorContract->clear();
 }
-void AppGUI::uiContractAdauga() {
-	string denumire = txtContractDenumire->text().toStdString();
-	string profesor = txtContractProfesor->text().toStdString();
+void AppGUI::uiAddContract() {
+	string denumire = txtDenumireContract->text().toStdString();
+	string profesor = txtProfesorContract->text().toStdString();
 	QMessageBox msg;
 	msg.setWindowIcon(QIcon("icons/contract.jpg"));
 
 	auto found = srv.filterDenumire(denumire);
 	if (found.empty()) {
-		msg.warning(contract, "Warning", "Disciplina nu exista in lista de discipline!");
+		msg.warning(this, "Warning", "Disciplina nu exista in lista de discipline!");
 		clearContractTextBox();
 		return;
 	}
@@ -364,13 +395,13 @@ void AppGUI::uiContractAdauga() {
 			srv.adauga_la_contract(denumire, found[0].get_profesor(), found);
 		}
 		catch (ContractException& mesaj) {
-			msg.warning(contract, "Warning", QString::fromStdString(mesaj.get_mesaj()));
+			msg.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
 		}
 		catch (RepoException& mesaj) {
-			msg.warning(contract, "Warning", QString::fromStdString(mesaj.get_mesaj()));
+			msg.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
 		}
 		catch (ValidatorException& mesaj) {
-			msg.warning(contract, "Warning", QString::fromStdString(mesaj.get_mesaj()));
+			msg.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
 		}
 	}
 	else {
@@ -379,21 +410,63 @@ void AppGUI::uiContractAdauga() {
 				srv.adauga_la_contract(denumire, profesor, found);
 			}
 			catch (ContractException& mesaj) {
-				msg.warning(contract, "Warning", QString::fromStdString(mesaj.get_mesaj()));
+				msg.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
 			}
 			catch (RepoException& mesaj) {
-				msg.warning(contract, "Warning", QString::fromStdString(mesaj.get_mesaj()));
+				msg.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
 			}
 			catch (ValidatorException& mesaj) {
-				msg.warning(contract, "Warning", QString::fromStdString(mesaj.get_mesaj()));
+				msg.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
 			}
 		}
 		else {
-			msg.warning(contract, "Warning", "Introduceti profesorul!");
+			msg.warning(this, "Warning", "Introduceti profesorul!");
 		}
 	}
 	clearContractTextBox();
-	loadList(srv.getAllContract());
+	//contract->reloadList(srv.getAllContract());
+
+	contract->notify();
+}
+
+void ContractGUI::connectContractSignals() {
+	QObject::connect(exit, &QPushButton::clicked, [&]() {
+		this->notify();
+		this->close();
+		});
+
+	QObject::connect(empty_contract, &QPushButton::clicked, [&]() {
+		srv.empty_contract();
+		reloadList(srv.getAllContract());
+		srv.notify();
+		});
+
+	QObject::connect(generate_contract, &QPushButton::clicked, [&]() {
+		string numar = txtContractNumar->text().toStdString();
+		int numar_corect;
+		QMessageBox msg;
+		msg.setWindowIcon(QIcon("icons/contract.jpg"));
+
+		try {
+			numar_corect = stoi(numar);
+		}
+		catch (std::invalid_argument& mesaj) {
+			msg.warning(this, "Warning", "Input invalid!");
+			txtContractNumar->clear();
+			return;
+		}
+
+		try {
+			srv.genereaza_contract(numar_corect);
+		}
+		catch (ContractException& mesaj) {
+			msg.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
+		}
+		srv.notify();
+		reloadList(srv.getAllContract());
+		});
+
+
 }
 
 void AppGUI::clearTextBox() {
@@ -584,9 +657,6 @@ void AppGUI::uiFilterProf() {
 }
 
 void AppGUI::connectSignals() {
-	QMessageBox msgBox;
-	msgBox.setWindowIcon(QIcon("icons/school.jpeg"));
-
 	QObject::connect(exit, &QPushButton::clicked, [&]() {
 		QMessageBox exitMessageBox;
 		exitMessageBox.setWindowIcon(QIcon("icons/bye.jpg"));
@@ -629,6 +699,8 @@ void AppGUI::connectSignals() {
 	QObject::connect(filtrare_prof, &QPushButton::clicked, this, &AppGUI::uiFilterProf);
 
 	QObject::connect(btn_undo, &QPushButton::clicked, [&]() {
+		QMessageBox msgBox;
+		msgBox.setWindowIcon(QIcon("icons/school.jpeg"));
 		try {
 			srv.undo();
 		}
@@ -640,46 +712,32 @@ void AppGUI::connectSignals() {
 		loadListfromTable(srv.getAll());
 		});
 
-	QObject::connect(btn_contract, &QPushButton::clicked, [&]() {
-		contract->show();
+	QObject::connect(open_contract, &QPushButton::clicked, [&]() {
+		ContractGUI* contract_n = new ContractGUI(srv);
+		contract_n->initContractGUI();
+		contract_n->connectContractSignals();
+		contract_n->show();
+		contract_n->reloadList(srv.getAllContract());
+		contract_n->addObserver(contract_n);
 		});
 
-	QObject::connect(btn_contract_exit, &QPushButton::clicked, [&]() {
-		contract->close();
+	QObject::connect(open_contract_readonly, &QPushButton::clicked, [&]() {
+		ContractReadOnlyGUI* contractRO = new ContractReadOnlyGUI{ srv };
+		contractRO->show();
 		});
 
-	QObject::connect(btn_contract_sterge, &QPushButton::clicked, [&]() {
-		srv.empty_contract();
-		loadList(srv.getAllContract());
-		});
-	QMessageBox mesajContract;
-	mesajContract.setWindowIcon(QIcon("icons/contract.jpg"));
+	QObject::connect(add_contract, &QPushButton::clicked, this, &AppGUI::uiAddContract);
 
-	QObject::connect(btn_contract_genereaza, &QPushButton::clicked, [&]() {
-		string nr_discipline = txtContractNumar->text().toStdString();
-		int nr_discipline_corecte;
+	QObject::connect(export_contract, &QPushButton::clicked, [&]() {
+		string nume_fisier = txtContractFile->text().toStdString();
+		QMessageBox msg;
+		msg.setWindowIcon(QIcon("icons/contract.jpg"));
+
 		try {
-			nr_discipline_corecte = stoi(nr_discipline);
-		}
-		catch (std::invalid_argument& mesaj) {
-			txtContractNumar->clear();
-			mesajContract.warning(contract, "Warning", "Numarul de discipline trebuie sa fie un numar natural!");
-			return;
-		}
-		try {
-			srv.genereaza_contract(nr_discipline_corecte);
+			srv.exporta_contract(nume_fisier);
 		}
 		catch (ContractException& mesaj) {
-			mesajContract.warning(contract, "Warning", QString::fromStdString(mesaj.get_mesaj()));
+			msg.warning(nullptr, "Warning", QString::fromStdString(mesaj.get_mesaj()));
 		}
-		txtContractNumar->clear();
-		loadList(srv.getAllContract());
-		});
-
-	QObject::connect(btn_contract_adauga, &QPushButton::clicked, this, &AppGUI::uiContractAdauga);
-	QObject::connect(btn_contract_export, &QPushButton::clicked, [&]() {
-		string nume_fisier = txtContractFile->text().toStdString();
-		srv.exporta_contract(nume_fisier);
-		txtContractFile->clear();
 		});
 }

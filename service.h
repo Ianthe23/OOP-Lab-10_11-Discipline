@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <memory>
 #include <map>
+#include "observer.h"
 
 using std::string;
 using std::vector;
@@ -23,7 +24,7 @@ using std::unique_ptr;
 using std::copy_if;
 using std::shuffle;
 
-class Service {
+class Service : public Observable{
 	RepoAbs& repo;
 	Validator& validator;
 	Contract& contract;

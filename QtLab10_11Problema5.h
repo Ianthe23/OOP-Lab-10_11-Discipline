@@ -1,6 +1,7 @@
 #ifndef QTLAB10_11PROBLEMA5_H_
 #define QTLAB10_11PROBLEMA5_H_
 
+#include <QWidget>
 #include <QMainWindow>
 #include <QTableWidget>
 #include <QListWidget>
@@ -18,20 +19,144 @@
 #include <QIcon>
 #include <QGraphicsDropShadowEffect>
 
+#include <QPaintEvent>
+#include <QPainter>
+#include <QRadioButton>
+
 #include "service.h"
+#include "observer.h"
+
+class ContractGUI : public QWidget, public Observable, public Observer {
+	friend class AppGUI;
+	friend class Service;
+	friend class ContractReadOnlyGUI;
+private:
+	Service& srv;
+
+	//butoane
+	QPushButton* empty_contract = new QPushButton{ "&Goleste contract" };
+	QPushButton* generate_contract = new QPushButton{ "&Genereaza contract" };
+	QPushButton* exit = new QPushButton{ "&Exit" };
+
+	//textboxuri
+	QLineEdit* txtContractNumar = new QLineEdit;
+
+	//lista
+	QListWidget* lista_contract = new QListWidget;
+public:
+	explicit ContractGUI(Service& srv) : srv{ srv } {
+		srv.addObserver(this);
+	};
+
+	void initContractGUI();
+	void connectContractSignals();
+	void reloadList(const vector<Disciplina>& discipline);
+	void update() override {
+		reloadList(srv.getAllContract());
+	}
+};
+
+class ContractReadOnlyGUI : public QWidget, public Observer {
+	friend class ContractGUI;
+	Service& srv;
+	QListWidget* lista_obiecte = new QListWidget;
+public:
+	explicit ContractReadOnlyGUI(Service& service) : srv{ service } {
+		initContractReadOnlyGUI();
+		srv.addObserver(this);
+	}
+
+	void initContractReadOnlyGUI() {
+		this->setWindowIcon(QIcon("icons/contract.jpg"));
+		this->setWindowTitle("Desene contracte");
+		/*lista_obiecte = new QListWidget();
+		QHBoxLayout* layout = new QHBoxLayout;
+		layout->addWidget(lista_obiecte);
+		setLayout(layout);*/
+	}
+	
+	void update() override {
+		repaint();
+	}
+
+	void reload() {
+		lista_obiecte->clear();
+		for (const auto& d : srv.getAllContract()) {
+			lista_obiecte->addItem(QString::fromStdString(d.to_string_print()));
+		}
+	}
+
+	void paintEvent(QPaintEvent* e) override {
+		QPainter p(this);
+		p.drawImage(0, 0, QImage("icons/book.png"));
+		srand(time(0));
+
+		int x = -20;
+		for (const auto& elem : srv.getAllContract()) {
+			x += 40;
+			int forma = rand() % 4;
+			int inaltime = rand() % 130;
+			int start_y = rand() % 60;
+			QColor color;
+
+			int color_num = rand() % 5;
+			switch (color_num) {
+			case 0:
+				color = Qt::red;
+				break;
+			case 1:
+				color = Qt::blue;
+				break;
+			case 2:
+				color = Qt::green;
+				break;
+			case 3:
+				color = Qt::yellow;
+				break;
+			case 4:
+				color = Qt::cyan;
+				break;
+			default:
+				break;
+			}
+
+			switch (forma) {
+			case 0:
+				p.drawRect(x, start_y, 20, inaltime);
+				break;
+			case 1:
+				p.drawEllipse(x, start_y, 20, inaltime);
+				break;
+			case 2:
+				p.fillRect(x, start_y, 20, inaltime, color);
+				break;
+			default:
+				p.fillRect(x, start_y, 20, inaltime, color);
+				break;
+			}
+		}
+	}
+
+	~ContractReadOnlyGUI() {
+		srv.removeObserver(this);
+	}
+};
+
 
 class AppGUI : public QWidget {
 
 public:
-    AppGUI(Service& srv) : srv{ srv } {
+    AppGUI(Service& service) : srv{ service } {
 		initGUI();
-		contractGUI();
+		contract = new ContractGUI(srv);
+		contract->initContractGUI();
+		contract->connectContractSignals();
 		connectSignals();
 	}
 
 private:
 	Service& srv;
-	QWidget* contract = new QWidget;
+	ContractGUI* contract;
 	QTableWidget* table = new QTableWidget;
 	QListWidget* list = new QListWidget;
 	QListWidget* lista_contracte = new QListWidget;
@@ -55,11 +180,13 @@ private:
 	QPushButton* load = new QPushButton{ "Load" };
 
 	//Butoane pt contract
-	QPushButton* btn_contract_adauga = new QPushButton{ "Adauga la contract" };
-	QPushButton* btn_contract_sterge = new QPushButton{ "Goleste contract" };
-	QPushButton* btn_contract_genereaza = new QPushButton{ "Genereaza contract" };
-	QPushButton* btn_contract_export = new QPushButton{ "Exporta contract" };
-	QPushButton* btn_contract_exit = new QPushButton{ "Exit" };
+	QPushButton* open_contract = new QPushButton{ "Deschide contract" };
+	QPushButton* open_contract_readonly = new QPushButton{ "Deschide contract readonly" };
+	QPushButton* add_contract = new QPushButton{ "&Adauga la contract" };
+	QPushButton* export_contract = new QPushButton{ "&Exporta contract" };
+	QLineEdit* txtDenumireContract = new QLineEdit;
+	QLineEdit* txtProfesorContract = new QLineEdit;
+	QLineEdit* txtContractFile = new QLineEdit;
 
 
 	///LAYOUT
@@ -69,16 +196,9 @@ private:
 	QLineEdit* txtProfesor = new QLineEdit;
 	QLineEdit* txtTip = new QLineEdit;
 
-	//pt contract
-	QLineEdit* txtContractDenumire = new QLineEdit;
-	QLineEdit* txtContractFile = new QLineEdit;
-	QLineEdit* txtContractProfesor = new QLineEdit;
-	QLineEdit* txtContractNumar = new QLineEdit;
-
 	void loadList(const vector<Disciplina>& discipline);
 	void loadTable(const vector<Disciplina>& discipline);
 	void loadListfromTable(const vector<Disciplina>& discipline);
-	void contractGUI();
 	void connectSignals();
 
 	void initGUI();
@@ -94,7 +214,7 @@ private:
 	void uiSortDenumire();
 	void uiSortOre();
 	void uiSortProfTip();
-	void uiContractAdauga();
+	void uiAddContract();
 
 };
 

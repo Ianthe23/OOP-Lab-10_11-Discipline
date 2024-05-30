@@ -64,6 +64,9 @@
     <ClInclude Include="QtLab10_11Problema5.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="observer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="contract.cpp">

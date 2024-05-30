@@ -14,6 +14,7 @@ const vector<Disciplina>& Service::getAllContract() noexcept {
 
 void Service::genereaza_contract(int nr_discipline) {
 	contract.genereazaContract(nr_discipline, repo.getAll());
+	notify();
 }
 
 void Service::exporta_contract(const string& nume) {
@@ -22,6 +23,7 @@ void Service::exporta_contract(const string& nume) {
 
 void Service::empty_contract() {
 	contract.emptyContract();
+	notify();
 }
 
 void Service::adauga_la_contract(const string& denumire, const string& profesor, const vector<Disciplina>& filtered) {
@@ -40,6 +42,7 @@ void Service::adauga_la_contract(const string& denumire, const string& profesor,
 			throw RepoException("Disciplina nu exista!\n");
 		}
 	}
+	notify();
 }
 
 int Service::getContractsize() {
