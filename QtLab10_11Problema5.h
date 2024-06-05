@@ -25,6 +25,8 @@
 
 #include "service.h"
 #include "observer.h"
+#include "MyListModel.h"
+#include "MyTableModel.h"
 
 class ContractGUI : public QWidget, public Observable, public Observer {
 	friend class AppGUI;
@@ -42,7 +44,8 @@ private:
 	QLineEdit* txtContractNumar = new QLineEdit;
 
 	//lista
-	QListWidget* lista_contract = new QListWidget;
+	QListView* lista_contract = new QListView;
+	MyListModel* model = nullptr;
 public:
 	explicit ContractGUI(Service& srv) : srv{ srv } {
 		srv.addObserver(this);
@@ -155,11 +158,12 @@ public:
 	}
 
 private:
+	MyTableModel* model = nullptr;
+	QTableView* table_view = new QTableView;
+
 	Service& srv;
 	ContractGUI* contract;
-	QTableWidget* table = new QTableWidget;
-	QListWidget* list = new QListWidget;
-	QListWidget* lista_contracte = new QListWidget;
+	QTableWidget* table_main = new QTableWidget;
 	QVBoxLayout* listaLayout = new QVBoxLayout;
 
 	///BUTOANE
@@ -196,9 +200,8 @@ private:
 	QLineEdit* txtProfesor = new QLineEdit;
 	QLineEdit* txtTip = new QLineEdit;
 
-	void loadList(const vector<Disciplina>& discipline);
+	//void loadList(const vector<Disciplina>& discipline);
 	void loadTable(const vector<Disciplina>& discipline);
-	void loadListfromTable(const vector<Disciplina>& discipline);
 	void connectSignals();
 
 	void initGUI();

@@ -67,6 +67,12 @@
     <ClInclude Include="observer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MyListModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MyTableModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="contract.cpp">

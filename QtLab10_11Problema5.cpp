@@ -41,20 +41,10 @@ void AppGUI::initGUI() {
 
 	auto s = srv.raport();
 
-	table->resizeColumnsToContents();
-	table->setMinimumSize(500, 200);
-	listaLayout->addWidget(table, 2);
+	table_view->resizeColumnsToContents();
+	table_view->setMinimumSize(440, 200);
+	listaLayout->addWidget(table_view, 2);
 
-	listaLayout->addSpacing(20);
-	QLabel* infoLabel = new QLabel("Lista discipline");
-	infoLabel->setAlignment(Qt::AlignCenter);
-	infoLabel->setFont(boldFont);
-
-	listaLayout->addWidget(infoLabel, 1);
-
-	//size the list like the table
-	list->setMinimumSize(500, 200);
-	listaLayout->addWidget(list, 2);
 	btn_undo->setIcon(QIcon("icons/undo.jpg"));
 	open_contract->setIcon(QIcon("icons/contract.jpg"));
 	open_contract_readonly->setIcon(QIcon("icons/contract.jpg"));
@@ -326,53 +316,16 @@ void ContractGUI::initContractGUI() {
 }
 
 void ContractGUI::reloadList(const vector<Disciplina>& discipline) {
-	this->lista_contract->clear();
-
-	for (const auto& disciplina : discipline) {
-		this->lista_contract->addItem(QString::fromStdString(disciplina.get_denumire() + " - prof. " + disciplina.get_profesor()));
-	}
+	model = new MyListModel{ discipline };
+	lista_contract->setModel(model);
 }
 
 void AppGUI::loadTable(const vector<Disciplina>& disciplina) {
-	this->table->clearContents();
-	this->table->setColumnCount(5);
-	this->table->setRowCount(disciplina.size() + 1);
-
-	int nr_linie = 0;
-	table->verticalHeader()->setVisible(false);
-	table->horizontalHeader()->setVisible(false);
-	table->setItem(nr_linie, 0, new QTableWidgetItem("Nr."));
-	table->setItem(nr_linie, 1, new QTableWidgetItem("Denumire"));
-	table->setItem(nr_linie, 2, new QTableWidgetItem("Ore"));
-	table->setItem(nr_linie, 3, new QTableWidgetItem("Tip"));
-	table->setItem(nr_linie, 4, new QTableWidgetItem("Profesor"));
-
-	nr_linie++;
-
-	for (const auto& Disciplina : disciplina) {
-		table->setItem(nr_linie, 0, new QTableWidgetItem(QString::number(nr_linie)));
-		table->setItem(nr_linie, 1, new QTableWidgetItem(QString::fromStdString(Disciplina.get_denumire())));
-		table->setItem(nr_linie, 2, new QTableWidgetItem(QString::number(Disciplina.get_ore())));
-		table->setItem(nr_linie, 3, new QTableWidgetItem(QString::fromStdString(Disciplina.get_tip())));
-		table->setItem(nr_linie, 4, new QTableWidgetItem(QString::fromStdString(Disciplina.get_profesor())));
-		nr_linie++;
-	}
-}
-void AppGUI::loadListfromTable(const vector<Disciplina>& discipline) {
-	list->clear();
-	int index = 0;
-	for (const auto& disciplina : discipline) {
-		index++;
-		list->addItem(QString::fromStdString(std::to_string(index) + ". " + disciplina.get_denumire() + "  - ore " + std::to_string(disciplina.get_ore()) + "  - tip " + disciplina.get_tip() + "  - prof. " + disciplina.get_profesor()));
-	}
+	model = new MyTableModel{ disciplina };
+	table_view->setModel(model);
+	table_view->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
-void AppGUI::loadList(const vector<Disciplina>& discipline) {
-	lista_contracte->clear();
-	for (const auto& disciplina : discipline) {
-		lista_contracte->addItem(QString::fromStdString(disciplina.get_denumire() + " - prof. " + disciplina.get_profesor()));
-	}
-}
 void AppGUI::clearContractTextBox() {
 	txtDenumireContract->clear();
 	txtProfesorContract->clear();
@@ -507,7 +460,6 @@ void AppGUI::uiAdauga() {
 
 	clearTextBox();
 	loadTable(srv.getAll());
-	loadListfromTable(srv.getAll());
 
 }
 
@@ -531,7 +483,6 @@ void AppGUI::uiSterge() {
 
 	clearTextBox();
 	loadTable(srv.getAll());
-	loadListfromTable(srv.getAll());
 }
 
 void AppGUI::uiModifica() {
@@ -565,7 +516,6 @@ void AppGUI::uiModifica() {
 
 	clearTextBox();
 	loadTable(srv.getAll());
-	loadListfromTable(srv.getAll());
 }
 
 void AppGUI::uiCauta() {
@@ -585,7 +535,6 @@ void AppGUI::uiCauta() {
 
 		clearTextBox();
 		loadTable(discipline);
-		loadListfromTable(discipline);
 	}
 	catch (RepoException& mesaj) {
 		msgBox.warning(this, "Warning", QString::fromStdString(mesaj.get_mesaj()));
@@ -601,19 +550,16 @@ void AppGUI::uiCauta() {
 void AppGUI::uiSortDenumire() {
 	vector<Disciplina> discipline = srv.sortDenumire();
 	loadTable(discipline);
-	loadListfromTable(discipline);
 }
 
 void AppGUI::uiSortOre() {
 	vector<Disciplina> discipline = srv.sortOre();
 	loadTable(discipline);
-	loadListfromTable(discipline);
 }
 
 void AppGUI::uiSortProfTip() {
 	vector<Disciplina> discipline = srv.sortProfTip();
 	loadTable(discipline);
-	loadListfromTable(discipline);
 }
 
 
@@ -639,7 +585,6 @@ void AppGUI::uiFilterOre() {
 
 	txtfilter->clear();
 	loadTable(discipline);
-	loadListfromTable(discipline);
 }
 
 void AppGUI::uiFilterProf() {
@@ -653,7 +598,6 @@ void AppGUI::uiFilterProf() {
 
 	txtfilter->clear();
 	loadTable(discipline);
-	loadListfromTable(discipline);
 }
 
 void AppGUI::connectSignals() {
@@ -670,7 +614,6 @@ void AppGUI::connectSignals() {
 
 	QObject::connect(load, &QPushButton::clicked, [&]() {
 		this->loadTable(srv.getAll());
-		this->loadListfromTable(srv.getAll());
 		});
 
 	for (const auto& btn : vector_btn) {
@@ -709,7 +652,6 @@ void AppGUI::connectSignals() {
 		}
 
 		loadTable(srv.getAll());
-		loadListfromTable(srv.getAll());
 		});
 
 	QObject::connect(open_contract, &QPushButton::clicked, [&]() {
@@ -740,4 +682,23 @@ void AppGUI::connectSignals() {
 			msg.warning(nullptr, "Warning", QString::fromStdString(mesaj.get_mesaj()));
 		}
 		});
+
+	QObject::connect(table_view, &QTableView::pressed, [&]() {
+		auto sel = table_view->selectionModel();
+		if (!sel->selectedRows().isEmpty()) {
+			QModelIndex index = sel->selectedRows().at(0);
+			QAbstractItemModel* model = table_view->model();
+
+			QVariant denumireVariant = model->data(model->index(index.row(), 0));
+			QVariant oreVariant = model->data(model->index(index.row(), 1));	
+			QVariant tipVariant = model->data(model->index(index.row(), 2));
+			QVariant profesorVariant = model->data(model->index(index.row(), 3));
+
+			txtDenumire->setText(denumireVariant.toString());
+			txtOre->setText(oreVariant.toString());
+			txtTip->setText(tipVariant.toString());
+			txtProfesor->setText(profesorVariant.toString());
+		}
+		});
+
 }

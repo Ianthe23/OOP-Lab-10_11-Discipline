@@ -99,6 +99,8 @@
     <ClCompile Include="ui.cpp" />
     <ClCompile Include="validator.cpp" />
     <QtRcc Include="QtLab10_11Problema5.qrc" />
+    <ClInclude Include="MyListModel.h" />
+    <ClInclude Include="MyTableModel.h" />
     <ClInclude Include="observer.h" />
     <ClInclude Include="QtLab10_11Problema5.h" />
     <ClCompile Include="contract.cpp" />
